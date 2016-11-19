@@ -11,7 +11,13 @@ inotify or similar for improved performance and reduced CPU usage.
 
 ```terminal
 $ vagrant plugin install vagrant-notify-forwarder
-$ vagrant reload
+```
+
+In `Vagrantfile` synced folder configuration, add the `notify: true` option. For example, in order
+to enable `vagrant-notify-forwarder` for the the default /vagrant shared folder, add the following:
+
+```ruby
+config.vm.synced_folder ".", "/vagrant", type: "nfs", notify: true
 ```
 
 By default, this sets up UDP port 29324 for port forwarding. If you're already using this port, or

@@ -43,15 +43,17 @@ module VagrantPlugins
             return unless path
 
             env[:machine].config.vm.synced_folders.each do |id, options|
-              unless options[:disabled]
-                hostpath = File.expand_path(options[:hostpath], env[:root_path])
-                guestpath = options[:guestpath]
-
-                args = "watch -c 127.0.0.1:#{port} #{hostpath} #{guestpath}"
-                start_watcher env, "#{path} #{args}"
-                env[:ui].detail("Notify-forwarder: host sending file change notifications to 127.0.0.1:#{port}")
-                env[:ui].detail("Notify-forwarder: host forwarding notifications on #{hostpath} to #{guestpath}")
+              if (options[:disabled] || !options[:notify])
+                next
               end
+
+              hostpath = File.expand_path(options[:hostpath], env[:root_path])
+              guestpath = options[:guestpath]
+
+              args = "watch -c 127.0.0.1:#{port} #{hostpath} #{guestpath}"
+              start_watcher env, "#{path} #{args}"
+              env[:ui].detail("Notify-forwarder: host sending file change notifications to 127.0.0.1:#{port}")
+              env[:ui].detail("Notify-forwarder: host forwarding notifications on #{hostpath} to #{guestpath}")
             end
           end
         end
